@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mymessiah.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="上一篇文章Docker(一)：Docker入门教程介绍了 Docker 基本概念，其中镜像、容器和 Dockerfile 。我们使用 Dockerfile 定义镜像，依赖镜像来运行容器，因此 Dockerfile 是镜像和容器的关键，Dockerfile 可以非常容易的定义镜像内容，同时在我们后期的微服务实践中，Dockerfile 也是重点关注的内容，今天我们就来一起学习它。 首先通过一张图来了">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dockerfile 使用介绍">
+<meta property="og:url" content="http://mymessiah.github.io/2020/07/07/Docker(%E4%BA%8C)%EF%BC%9ADockerfile%20%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/index.html">
+<meta property="og:site_name" content="Senkorl的个人空间">
+<meta property="og:description" content="上一篇文章Docker(一)：Docker入门教程介绍了 Docker 基本概念，其中镜像、容器和 Dockerfile 。我们使用 Dockerfile 定义镜像，依赖镜像来运行容器，因此 Dockerfile 是镜像和容器的关键，Dockerfile 可以非常容易的定义镜像内容，同时在我们后期的微服务实践中，Dockerfile 也是重点关注的内容，今天我们就来一起学习它。 首先通过一张图来了">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://favorites.ren/assets/images/2018/docker/DockerFile.png">
+<meta property="og:image" content="http://favorites.ren/assets/images/2018/docker/1.png">
+<meta property="og:image" content="http://favorites.ren/assets/images/2018/docker/2.png">
+<meta property="article:published_time" content="2020-07-06T16:23:38.000Z">
+<meta property="article:modified_time" content="2020-11-26T05:50:37.588Z">
+<meta property="article:author" content="MyMessiah">
+<meta property="article:tag" content="docker">
+<meta property="article:tag" content="dockerfile">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://favorites.ren/assets/images/2018/docker/DockerFile.png">
+
+<link rel="canonical" href="http://mymessiah.github.io/2020/07/07/Docker(%E4%BA%8C)%EF%BC%9ADockerfile%20%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Dockerfile 使用介绍 | Senkorl的个人空间</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Senkorl的个人空间</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">code is life</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://mymessiah.github.io/2020/07/07/Docker(%E4%BA%8C)%EF%BC%9ADockerfile%20%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="MyMessiah">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Senkorl的个人空间">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Dockerfile 使用介绍
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-07-07 00:23:38" itemprop="dateCreated datePublished" datetime="2020-07-07T00:23:38+08:00">2020-07-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-26 13:50:37" itemprop="dateModified" datetime="2020-11-26T13:50:37+08:00">2020-11-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/docker/" itemprop="url" rel="index"><span itemprop="name">docker</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>上一篇文章<a href="http://www.ityouknow.com/docker/2018/03/07/docker-introduction.html" target="_blank" rel="noopener">Docker(一)：Docker入门教程</a>介绍了 Docker 基本概念，其中镜像、容器和 Dockerfile 。我们使用 Dockerfile 定义镜像，依赖镜像来运行容器，因此 Dockerfile 是镜像和容器的关键，Dockerfile 可以非常容易的定义镜像内容，同时在我们后期的微服务实践中，Dockerfile 也是重点关注的内容，今天我们就来一起学习它。</p>
+<p>首先通过一张图来了解 Docker 镜像、容器和 Dockerfile 三者之间的关系。</p>
+<p><img src="http://favorites.ren/assets/images/2018/docker/DockerFile.png" alt="img"></p>
+<p>通过上图可以看出使用 Dockerfile 定义镜像，运行镜像启动容器。</p>
+<h2 id="Dockerfile-概念"><a href="#Dockerfile-概念" class="headerlink" title="Dockerfile 概念"></a>Dockerfile 概念</h2><p>Docker 镜像是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。镜像不包含任何动态数据，其内容在构建之后也不会被改变。</p>
+<p>镜像的定制实际上就是定制每一层所添加的配置、文件。如果我们可以把每一层修改、安装、构建、操作的命令都写入一个脚本，用这个脚本来构建、定制镜像，那么之前提及的无法重复的问题、镜像构建透明性的问题、体积的问题就都会解决。这个脚本就是 Dockerfile。</p>
+<p>Dockerfile 是一个文本文件，其内包含了一条条的指令(Instruction)，每一条指令构建一层，因此每一条指令的内容，就是描述该层应当如何构建。有了 Dockerfile，当我们需要定制自己额外的需求时，只需在 Dockerfile 上添加或者修改指令，重新生成 image 即可，省去了敲命令的麻烦。</p>
+<h2 id="Dockerfile-文件格式"><a href="#Dockerfile-文件格式" class="headerlink" title="Dockerfile 文件格式"></a>Dockerfile 文件格式</h2><p>Dockerfile文件格式如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">##  Dockerfile文件格式</span><br><span class="line"></span><br><span class="line"># This dockerfile uses the ubuntu image</span><br><span class="line"># VERSION 2 - EDITION 1</span><br><span class="line"># Author: docker_user</span><br><span class="line"># Command format: Instruction [arguments &#x2F; command] ..</span><br><span class="line"> </span><br><span class="line"># 1、第一行必须指定 基础镜像信息</span><br><span class="line">FROM ubuntu</span><br><span class="line"> </span><br><span class="line"># 2、维护者信息</span><br><span class="line">MAINTAINER docker_user docker_user@email.com</span><br><span class="line"> </span><br><span class="line"># 3、镜像操作指令</span><br><span class="line">RUN echo &quot;deb http:&#x2F;&#x2F;archive.ubuntu.com&#x2F;ubuntu&#x2F; raring main universe&quot; &gt;&gt; &#x2F;etc&#x2F;apt&#x2F;sources.list</span><br><span class="line">RUN apt-get update &amp;&amp; apt-get install -y nginx</span><br><span class="line">RUN echo &quot;\ndaemon off;&quot; &gt;&gt; &#x2F;etc&#x2F;nginx&#x2F;nginx.conf</span><br><span class="line"> </span><br><span class="line"># 4、容器启动执行指令</span><br><span class="line">CMD &#x2F;usr&#x2F;sbin&#x2F;nginx</span><br></pre></td></tr></table></figure>
+
+<p>Dockerfile 分为四部分：<strong>基础镜像信息、维护者信息、镜像操作指令、容器启动执行指令</strong>。一开始必须要指明所基于的镜像名称，接下来一般会说明维护者信息；后面则是镜像操作指令，例如 RUN 指令。每执行一条RUN 指令，镜像添加新的一层，并提交；最后是 CMD 指令，来指明运行容器时的操作命令。</p>
+<h2 id="构建镜像"><a href="#构建镜像" class="headerlink" title="构建镜像"></a>构建镜像</h2><p>docker build 命令会根据 Dockerfile 文件及上下文构建新 Docker 镜像。构建上下文是指 Dockerfile 所在的本地路径或一个URL（Git仓库地址）。构建上下文环境会被递归处理，所以构建所指定的路径还包括了子目录，而URL还包括了其中指定的子模块。</p>
+<p>将当前目录做为构建上下文时，可以像下面这样使用docker build命令构建镜像：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker build .</span><br><span class="line">Sending build context to Docker daemon  6.51 MB</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>说明：构建会在 Docker 后台守护进程（daemon）中执行，而不是<code>CLI</code>中。构建前，构建进程会将全部内容（递归）发送到守护进程。大多情况下，应该将一个空目录作为构建上下文环境，并将 Dockerfile 文件放在该目录下。</p>
+<p>在构建上下文中使用的 Dockerfile 文件，是一个构建指令文件。为了提高构建性能，可以通过<code>.dockerignore</code>文件排除上下文目录下不需要的文件和目录。</p>
+<p>在 Docker 构建镜像的第一步，docker CLI 会先在上下文目录中寻找<code>.dockerignore</code>文件，根据<code>.dockerignore</code> 文件排除上下文目录中的部分文件和目录，然后把剩下的文件和目录传递给 Docker 服务。</p>
+<p>Dockerfile 一般位于构建上下文的根目录下，也可以通过<code>-f</code>指定该文件的位置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -f &#x2F;path&#x2F;to&#x2F;a&#x2F;Dockerfile .</span><br></pre></td></tr></table></figure>
+
+<p>构建时，还可以通过<code>-t</code>参数指定构建成镜像的仓库、标签。</p>
+<h2 id="镜像标签"><a href="#镜像标签" class="headerlink" title="镜像标签"></a>镜像标签</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t nginx&#x2F;v3 .</span><br></pre></td></tr></table></figure>
+
+<p>如果存在多个仓库下，或使用多个镜像标签，就可以使用多个<code>-t</code>参数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t nginx&#x2F;v3:1.0.2 -t nginx&#x2F;v3:latest .</span><br></pre></td></tr></table></figure>
+
+<p>在 Docker 守护进程执行 Dockerfile 中的指令前，首先会对 Dockerfile 进行语法检查，有语法错误时会返回：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker build -t nginx&#x2F;v3 .</span><br><span class="line">Sending build context to Docker daemon 2.048 kB</span><br><span class="line">Error response from daemon: Unknown instruction: RUNCMD</span><br></pre></td></tr></table></figure>
+
+<h2 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h2><p>Docker 守护进程会一条一条的执行 Dockerfile 中的指令，而且会在每一步提交并生成一个新镜像，最后会输出最终镜像的ID。生成完成后，Docker 守护进程会自动清理你发送的上下文。 Dockerfile文件中的每条指令会被独立执行，并会创建一个新镜像，RUN cd /tmp等命令不会对下条指令产生影响。 Docker 会重用已生成的中间镜像，以加速docker build的构建速度。以下是一个使用了缓存镜像的执行过程：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$ docker build -t svendowideit&#x2F;ambassador .</span><br><span class="line">Sending build context to Docker daemon 15.36 kB</span><br><span class="line">Step 1&#x2F;4 : FROM alpine:3.2</span><br><span class="line"> ---&gt; 31f630c65071</span><br><span class="line">Step 2&#x2F;4 : MAINTAINER SvenDowideit@home.org.au</span><br><span class="line"> ---&gt; Using cache</span><br><span class="line"> ---&gt; 2a1c91448f5f</span><br><span class="line">Step 3&#x2F;4 : RUN apk update &amp;&amp;      apk add socat &amp;&amp;        rm -r &#x2F;var&#x2F;cache&#x2F;</span><br><span class="line"> ---&gt; Using cache</span><br><span class="line"> ---&gt; 21ed6e7fbb73</span><br><span class="line">Step 4&#x2F;4 : CMD env | grep _TCP&#x3D; | (sed &#39;s&#x2F;.*_PORT_\([0-9]*\)_TCP&#x3D;tcp:\&#x2F;\&#x2F;\(.*\):\(.*\)&#x2F;socat -t 100000000 TCP4-LISTEN:\1,fork,reuseaddr TCP4:\2:\3 \&amp;&#x2F;&#39; &amp;&amp; echo wait) | sh</span><br><span class="line"> ---&gt; Using cache</span><br><span class="line"> ---&gt; 7ea8aef582cc</span><br><span class="line">Successfully built 7ea8aef582cc</span><br></pre></td></tr></table></figure>
+
+<p>构建缓存仅会使用本地父生成链上的镜像，如果不想使用本地缓存的镜像，也可以通过<code>--cache-from</code>指定缓存。指定后将不再使用本地生成的镜像链，而是从镜像仓库中下载。</p>
+<h2 id="寻找缓存的逻辑"><a href="#寻找缓存的逻辑" class="headerlink" title="寻找缓存的逻辑"></a>寻找缓存的逻辑</h2><p>Docker 寻找缓存的逻辑其实就是树型结构根据 Dockerfile 指令遍历子节点的过程。下图可以说明这个逻辑。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">     FROM base_image:version           Dockerfile:</span><br><span class="line">           +----------+                FROM base_image:version</span><br><span class="line">           |base image|                RUN cmd1  --&gt; use cache because we found base image</span><br><span class="line">           +-----X----+                RUN cmd11 --&gt; use cache because we found cmd1</span><br><span class="line">                &#x2F; \</span><br><span class="line">               &#x2F;   \</span><br><span class="line">       RUN cmd1     RUN cmd2           Dockerfile:</span><br><span class="line">       +------+     +------+           FROM base_image:version</span><br><span class="line">       |image1|     |image2|           RUN cmd2  --&gt; use cache because we found base image</span><br><span class="line">       +---X--+     +------+           RUN cmd21 --&gt; not use cache because there&#39;s no child node</span><br><span class="line">          &#x2F; \                                        running cmd21, so we build a new image here</span><br><span class="line">         &#x2F;   \</span><br><span class="line">RUN cmd11     RUN cmd12</span><br><span class="line">+-------+     +-------+</span><br><span class="line">|image11|     |image12|</span><br><span class="line">+-------+     +-------+</span><br></pre></td></tr></table></figure>
+
+<p>大部分指令可以根据上述逻辑去寻找缓存，除了 ADD 和 COPY 。这两个指令会复制文件内容到镜像内，除了指令相同以外，Docker 还会检查每个文件内容校验(不包括最后修改时间和最后访问时间)，如果校验不一致，则不会使用缓存。</p>
+<p>除了这两个命令，Docker 并不会去检查容器内的文件内容，比如 <code>RUN apt-get -y update</code>，每次执行时文件可能都不一样，但是 Docker 认为命令一致，会继续使用缓存。这样一来，以后构建时都不会再重新运行<code>apt-get -y update</code>。</p>
+<p>如果 Docker 没有找到当前指令的缓存，则会构建一个新的镜像，并且之后的所有指令都不会再去寻找缓存。</p>
+<h2 id="简单示例"><a href="#简单示例" class="headerlink" title="简单示例"></a>简单示例</h2><p>接下来用一个简单的示例来感受一下 Dockerfile 是如何用来构建镜像启动容器。我们以定制 nginx 镜像为例，在一个空白目录中，建立一个文本文件，并命名为 Dockerfile：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir mynginx</span><br><span class="line">cd mynginx</span><br><span class="line">vi Dockerfile</span><br></pre></td></tr></table></figure>
+
+<p>构建一个 Dockerfile 文件内容为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">FROM nginx</span><br><span class="line">RUN echo &#39;&lt;h1&gt;Hello, Docker!&lt;&#x2F;h1&gt;&#39; &gt; &#x2F;usr&#x2F;share&#x2F;nginx&#x2F;html&#x2F;index.html</span><br><span class="line">vi Dockerfile</span><br></pre></td></tr></table></figure>
+
+<p>这个 Dockerfile 很简单，一共就两行涉及到了两条指令：FROM 和 RUN，FROM 表示获取指定基础镜像，RUN 执行命令，在执行的过程中重写了 nginx 的默认页面信息，将信息替换为：Hello, Docker!。</p>
+<p>在 Dockerfile 文件所在目录执行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t nginx:v1 .</span><br></pre></td></tr></table></figure>
+
+<p>命令最后有一个. 表示当前目录</p>
+<p>构建完成之后，使用 <code>docker images</code> 命令查看所有镜像，如果存在 REPOSITORY 为 nginx 和 TAG 是 v1 的信息，就表示构建成功。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker images</span><br><span class="line">REPOSITORY                      TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">nginx                           v1                  8c92471de2cc        6 minutes ago       108.6 MB</span><br></pre></td></tr></table></figure>
+
+<p>接下来使用 docker run 命令来启动容器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run  --name docker_nginx_v1   -d -p 80:80 nginx:v1</span><br></pre></td></tr></table></figure>
+
+<p>这条命令会用 nginx 镜像启动一个容器，命名为<code>docker_nginx_v1</code>，并且映射了 80 端口，这样我们可以用浏览器去访问这个 nginx 服务器：<code>http://192.168.0.54/</code>，页面返回信息：</p>
+<p><img src="http://favorites.ren/assets/images/2018/docker/1.png" alt="img"></p>
+<p>这样一个简单使用 Dockerfile 构建镜像，运行容器的示例就完成了！</p>
+<h2 id="修改容器内容"><a href="#修改容器内容" class="headerlink" title="修改容器内容"></a>修改容器内容</h2><p>容器启动后，需要对容器内的文件进行进一步的完善，可以使用<code>docker exec -it xx bash</code>命令再次进行修改，以上面的示例为基础，修改 nginx 启动页面内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it docker_nginx_v1   bash</span><br><span class="line">root@3729b97e8226:&#x2F;# echo &#39;&lt;h1&gt;Hello, Docker neo!&lt;&#x2F;h1&gt;&#39; &gt; &#x2F;usr&#x2F;share&#x2F;nginx&#x2F;html&#x2F;index.html</span><br><span class="line">root@3729b97e8226:&#x2F;# exit</span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
+
+<p>以交互式终端方式进入 docker_nginx_v1 容器，并执行了 bash 命令，也就是获得一个可操作的 Shell。然后，我们用<code>Hello, Docker neo!</code>覆盖了 <code>/usr/share/nginx/html/index.html</code> 的内容。</p>
+<p>再次刷新浏览器，会发现内容被改变。</p>
+<p><img src="http://favorites.ren/assets/images/2018/docker/2.png" alt="img"></p>
+<p>修改了容器的文件，也就是改动了容器的存储层，可以通过 docker diff 命令看到具体的改动。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker diff docker_nginx_v1 </span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>这样 Dockerfile 使用方式就为大家介绍完了，下期为大家介绍 Dockerfile 命令的详细使用。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://docs.docker.com/engine/reference/builder/#usage" target="_blank" rel="noopener">Dockerfile reference</a><br><a href="https://www.jianshu.com/p/cbce69c7a52f" target="_blank" rel="noopener">使用Dockerfile构建Docker镜像</a><br><a href="https://itbilu.com/linux/docker/VyhM5wPuz.html" target="_blank" rel="noopener">Docker镜像构建文件Dockerfile及相关命令介绍</a><br><a href="https://github.com/qianlei90/Blog/issues/35" target="_blank" rel="noopener">深入Dockerfile（一）: 语法指南</a><br><a href="https://yeasy.gitbooks.io/docker_practice/content/" target="_blank" rel="noopener">Docker — 从入门到实践</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/docker/" rel="tag"># docker</a>
+              <a href="/tags/dockerfile/" rel="tag"># dockerfile</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020/07/07/Docker(%E4%B8%89)%EF%BC%9ADockerfile%20%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/" rel="next" title="Dockerfile 命令详解">
+      Dockerfile 命令详解 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Dockerfile-概念"><span class="nav-number">1.</span> <span class="nav-text">Dockerfile 概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dockerfile-文件格式"><span class="nav-number">2.</span> <span class="nav-text">Dockerfile 文件格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#构建镜像"><span class="nav-number">3.</span> <span class="nav-text">构建镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#镜像标签"><span class="nav-number">4.</span> <span class="nav-text">镜像标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缓存"><span class="nav-number">5.</span> <span class="nav-text">缓存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#寻找缓存的逻辑"><span class="nav-number">6.</span> <span class="nav-text">寻找缓存的逻辑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#简单示例"><span class="nav-number">7.</span> <span class="nav-text">简单示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改容器内容"><span class="nav-number">8.</span> <span class="nav-text">修改容器内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">9.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="MyMessiah"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">MyMessiah</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MyMessiah</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
