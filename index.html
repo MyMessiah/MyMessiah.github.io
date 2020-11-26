@@ -25,7 +25,7 @@
 <meta property="og:url" content="http://mymessiah.github.io/index.html">
 <meta property="og:site_name" content="Senkorl">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:author" content="MyMessiah">
+<meta property="article:author" content="Senkorl">
 <meta property="article:tag" content="PHP">
 <meta name="twitter:card" content="summary">
 
@@ -158,11 +158,95 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://mymessiah.github.io/2019/07/07/docker-%E4%BD%BF%E7%94%A8wsl/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Senkorl">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Senkorl">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/07/07/docker-%E4%BD%BF%E7%94%A8wsl/" class="post-title-link" itemprop="url">docker-windows环境使用wsl</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-07 00:23:38" itemprop="dateCreated datePublished" datetime="2019-07-07T00:23:38+08:00">2019-07-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-26 16:43:32" itemprop="dateModified" datetime="2020-11-26T16:43:32+08:00">2020-11-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/docker/" itemprop="url" rel="index"><span itemprop="name">docker</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="Windows-Docker-Desktop"><a href="#Windows-Docker-Desktop" class="headerlink" title="Windows Docker Desktop"></a>Windows Docker Desktop</h2><h4 id="设置默认wsl为ubuntu"><a href="#设置默认wsl为ubuntu" class="headerlink" title="设置默认wsl为ubuntu"></a>设置默认wsl为ubuntu</h4><ol>
+<li>确保分发以WSL 2模式运行。WSL可以在v1或v2模式下运行发行版。</li>
+</ol>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 要检查WSL模式，请运行</span></span><br><span class="line">&gt; wsl <span class="literal">-l</span> <span class="literal">-v</span></span><br><span class="line"><span class="comment"># 要将现有的Linux发行版升级到v2，请运行：</span></span><br><span class="line">&gt; wsl -<span class="literal">-set</span><span class="literal">-version</span> (distro name)     <span class="number">2</span></span><br><span class="line"><span class="comment"># 要将v2设置为将来安装的默认版本，请运行：</span></span><br><span class="line">&gt; wsl -<span class="literal">-set</span><span class="literal">-default</span><span class="literal">-version</span> <span class="number">2</span></span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/07/07/docker-%E4%BD%BF%E7%94%A8wsl/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://mymessiah.github.io/2019/07/07/docker%E5%91%BD%E4%BB%A4-clean/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="MyMessiah">
+      <meta itemprop="name" content="Senkorl">
       <meta itemprop="description" content="">
     </span>
 
@@ -243,95 +327,11 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://mymessiah.github.io/2019/07/07/docker-%E4%BD%BF%E7%94%A8wsl/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="MyMessiah">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Senkorl">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/07/07/docker-%E4%BD%BF%E7%94%A8wsl/" class="post-title-link" itemprop="url">docker-windows环境使用wsl</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-07-07 00:23:38" itemprop="dateCreated datePublished" datetime="2019-07-07T00:23:38+08:00">2019-07-07</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-11-26 16:43:32" itemprop="dateModified" datetime="2020-11-26T16:43:32+08:00">2020-11-26</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/docker/" itemprop="url" rel="index"><span itemprop="name">docker</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="Windows-Docker-Desktop"><a href="#Windows-Docker-Desktop" class="headerlink" title="Windows Docker Desktop"></a>Windows Docker Desktop</h2><h4 id="设置默认wsl为ubuntu"><a href="#设置默认wsl为ubuntu" class="headerlink" title="设置默认wsl为ubuntu"></a>设置默认wsl为ubuntu</h4><ol>
-<li>确保分发以WSL 2模式运行。WSL可以在v1或v2模式下运行发行版。</li>
-</ol>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 要检查WSL模式，请运行</span></span><br><span class="line">&gt; wsl <span class="literal">-l</span> <span class="literal">-v</span></span><br><span class="line"><span class="comment"># 要将现有的Linux发行版升级到v2，请运行：</span></span><br><span class="line">&gt; wsl -<span class="literal">-set</span><span class="literal">-version</span> (distro name)     <span class="number">2</span></span><br><span class="line"><span class="comment"># 要将v2设置为将来安装的默认版本，请运行：</span></span><br><span class="line">&gt; wsl -<span class="literal">-set</span><span class="literal">-default</span><span class="literal">-version</span> <span class="number">2</span></span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/07/07/docker-%E4%BD%BF%E7%94%A8wsl/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://mymessiah.github.io/2019/07/07/PHP%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%BA%90/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="MyMessiah">
+      <meta itemprop="name" content="Senkorl">
       <meta itemprop="description" content="">
     </span>
 
@@ -476,9 +476,9 @@
 
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="MyMessiah"
+    <img class="site-author-image" itemprop="image" alt="Senkorl"
       src="/images/avatar.gif">
-  <p class="site-author-name" itemprop="name">MyMessiah</p>
+  <p class="site-author-name" itemprop="name">Senkorl</p>
   <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap motion-element">
@@ -534,7 +534,7 @@
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">MyMessiah</span>
+  <span class="author" itemprop="copyrightHolder">Senkorl</span>
 </div>
 
 <!-- 网站运行时间的设置 -->
